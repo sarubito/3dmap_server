@@ -41,6 +41,9 @@ ament_auto_add_executable(map_server
 # target_link_libraries(publish_pc ${PCL_LIBRARIES})
 target_link_libraries(map_server ${PCL_LIBRARIES})
 
+install(DIRECTORY map DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

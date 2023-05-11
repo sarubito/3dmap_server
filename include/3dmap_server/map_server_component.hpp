@@ -77,7 +77,10 @@ namespace map_server
 
       rclcpp::TimerBase::SharedPtr timer_;
       rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_publisher_;
+    
       bool flag;
+      std::string pcd_path;
+
       sensor_msgs::msg::PointCloud2 output;
 
       pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();

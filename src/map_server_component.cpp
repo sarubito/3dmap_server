@@ -9,13 +9,16 @@ namespace map_server
         pointcloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("map_pointcloud", 10);
         timer_ = this->create_wall_timer(500ms, std::bind(&MapServerComponent::pointcloud_callback, this));
         flag = true;
+
+        this->declare_parameter("pcdfile_path", "map.pcd");
+        pcd_path = this->get_parameter("pcdfile_path").as_string();
         
     }
 
     void MapServerComponent::pointcloud_callback()
     {
         if(flag == true){
-            if(pcl::io::loadPCDFile<pcl::PointXYZ>("map.pcd", *cloud) == -1)
+            if(pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_path, *cloud) == -1)
             {
                 RCLCPP_INFO(this->get_logger(),"Couldn't read file map.pcd\n");
             
