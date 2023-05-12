@@ -50,8 +50,11 @@ extern "C" {
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "pcl/point_cloud.h"
 #include "pcl/point_types.h"
 #include "pcl_conversions/pcl_conversions.h"
+#include "pcl/segmentation/extract_clusters.h"
+#include "pcl/filters/extract_indices.h"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 
 using namespace std::chrono_literals;
@@ -59,18 +62,18 @@ using namespace std::chrono_literals;
 
 namespace map_server
 {
-  typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
-
 
   class MapServerComponent : public rclcpp::Node
   {
     public:
       MAP_SERVER_COMPONENT_PUBLIC
       explicit MapServerComponent(const rclcpp::NodeOptions & options);
-      virtual ~MapServerComponent();
+      virtual ~MapServerComponent(void);
     
     private:
-      void pointcloud_callback();
+      void pointcloud_callback(void);
+      void plane_removal(pcl::PointCloud<pcl::PointXYZ>& input_cloud);
+      pcl::PointCloud<pcl::PointXYZ>::Ptr euclideanclustering(pcl::PointCloud<pcl::PointXYZ>::Ptr& input_cloud);
 
       int cloud_width;
       int cloud_height;
@@ -79,11 +82,37 @@ namespace map_server
       rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_publisher_;
     
       bool flag;
-      std::string pcd_path;
+      std::string pcd_path_;
+      float cluster_tolerance_param_;
+      float min_cluster_sizeparam_;
+
 
       sensor_msgs::msg::PointCloud2 output;
 
+      //スマートポインタインスタンス
       pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr clustered_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::search::KdTree<pcl::PointXYZ>::Ptr tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr tmp_clustered_points = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::PointIndices::Ptr tmp_cluster_indices = std::make_shared<pcl::PointIndices>();
+
+      //ユークリッドクラスタリング
+      
+      //クラスタを格納する配列
+      std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clusters;
+      //クラスタリング後のインデックスが格納される配列
+      std::vector<pcl::PointIndices> cluster_indices;
+      pcl::EuclideanClusterExtraction<pcl::PointXYZ> ece;
+      pcl::ExtractIndices<pcl::PointXYZ> ei;
+
+      //パラメータ
+      bool cluster_flg;
+      double cluster_tolerance;
+      int min_cluster_size;
+
+      //時間計測のための変数
+      float time;
+
   };
 
 }
