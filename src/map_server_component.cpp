@@ -38,18 +38,16 @@ namespace map_server
         cloud_width = cloud->width;
         cloud_height = cloud->height;
         RCLCPP_INFO(this->get_logger(), "before width : %d, height : %d\n", cloud_width, cloud_height);
-        
-        cloud->header.frame_id = "map";
-        cloud->header.stamp = this->get_clock()->now().nanoseconds() ;
 
-        plane_removal(*cloud);
+        //plane_removal(*cloud);
 
         cloud_width = cloud->width;
         cloud_height = cloud->height;
 
-        clustered_cloud = euclideanclustering(cloud);
-
+        //clustered_cloud = euclideanclustering(cloud);
         pcl::toROSMsg(*cloud, this->output);
+        this->output.header.frame_id = "map";
+        this->output.header.stamp = this->get_clock()->now();
         pointcloud_publisher_->publish(this->output);
     }
 
