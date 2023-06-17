@@ -45,10 +45,19 @@ namespace map_server
         cloud_height = cloud->height;
 
         //clustered_cloud = euclideanclustering(cloud);
-        pcl::toROSMsg(*cloud, this->output);
+        DownSampling();
+        pcl::toROSMsg(*pcl_voxel_grid, this->output);
         this->output.header.frame_id = "map";
         this->output.header.stamp = this->get_clock()->now();
         pointcloud_publisher_->publish(this->output);
+    }
+
+    void MapServerComponent::DownSampling(void)
+    {
+        vg.setInputCloud(cloud);
+        vg.setLeafSize(0.1, 0.1, 0.1);
+        vg.filter(*pcl_voxel_grid);
+
     }
 
     void MapServerComponent::plane_removal(pcl::PointCloud<pcl::PointXYZ>& input_cloud)

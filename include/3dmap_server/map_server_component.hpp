@@ -55,6 +55,7 @@ extern "C" {
 #include "pcl_conversions/pcl_conversions.h"
 #include "pcl/segmentation/extract_clusters.h"
 #include "pcl/filters/extract_indices.h"
+#include "pcl/filters/voxel_grid.h"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 
 using namespace std::chrono_literals;
@@ -73,6 +74,7 @@ namespace map_server
     private:
       void pointcloud_callback(void);
       void plane_removal(pcl::PointCloud<pcl::PointXYZ>& input_cloud);
+      void DownSampling(void);
       pcl::PointCloud<pcl::PointXYZ>::Ptr euclideanclustering(pcl::PointCloud<pcl::PointXYZ>::Ptr& input_cloud);
 
       int cloud_width;
@@ -95,6 +97,10 @@ namespace map_server
       pcl::search::KdTree<pcl::PointXYZ>::Ptr tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
       pcl::PointCloud<pcl::PointXYZ>::Ptr tmp_clustered_points = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
       pcl::PointIndices::Ptr tmp_cluster_indices = std::make_shared<pcl::PointIndices>();
+
+      //voxel grid
+      pcl::VoxelGrid<pcl::PointXYZ> vg;
+      pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_voxel_grid = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
       //ユークリッドクラスタリング
       
