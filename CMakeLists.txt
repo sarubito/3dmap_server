@@ -15,14 +15,17 @@ find_package(PCL REQUIRED COMPONENTS common io)
 find_package(PCL 1.2 REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(Boost REQUIRED)
 
 ament_auto_find_build_dependencies()
 
-include_directories(include 
+include_directories(include
+                    Boost
                     ${PCL_INCLUDE_DIRS} 
                     ${EIGEN3_INCLUDE_DIRS}
 )
 link_directories(
+  Boost
   ${PCL_LIBRARY_DIRS}
   ${EIGEN3_INCLUDE_DIRS})
 

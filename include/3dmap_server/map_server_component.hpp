@@ -44,11 +44,14 @@ extern "C" {
 }  // extern "
 #endif
 
+#include <iostream>
 #include <memory>
 #include <chrono>
 #include <vector>
 #include <string>
 
+#include "boost/shared_ptr.hpp"
+#include "boost/make_shared.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "pcl/point_cloud.h"
 #include "pcl/point_types.h"
@@ -92,15 +95,15 @@ namespace map_server
       sensor_msgs::msg::PointCloud2 output;
 
       //スマートポインタインスタンス
-      pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-      pcl::PointCloud<pcl::PointXYZ>::Ptr clustered_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-      pcl::search::KdTree<pcl::PointXYZ>::Ptr tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
-      pcl::PointCloud<pcl::PointXYZ>::Ptr tmp_clustered_points = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-      pcl::PointIndices::Ptr tmp_cluster_indices = std::make_shared<pcl::PointIndices>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr clustered_cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::search::KdTree<pcl::PointXYZ>::Ptr tree = boost::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr tmp_clustered_points = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::PointIndices::Ptr tmp_cluster_indices = boost::make_shared<pcl::PointIndices>();
 
       //voxel grid
       pcl::VoxelGrid<pcl::PointXYZ> vg;
-      pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_voxel_grid = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+      pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_voxel_grid = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
       //ユークリッドクラスタリング
       
